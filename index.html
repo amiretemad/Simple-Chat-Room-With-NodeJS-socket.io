@@ -17,7 +17,7 @@
     <form id="chat_room">
         <div class="form-group">
             <label for="conversation_holder"> Conversations </label>
-            <textarea id="conversation_holder" class="form-control" rows="10" readonly="readonly"></textarea>
+            <div id="conversation_holder" contenteditable="true" style="height: 300px;background: #eeeeee;overflow: scroll;overflow-x: hidden;" ></div>
         </div>
         <div class="form-group">
             <label for="enter_message">Enter Message :</label>
@@ -33,14 +33,18 @@
     $(function () {
         var socket = io();
         $('form#chat_room').submit(function () {
-            socket.emit('chat message', $('#enter_message').val());
-            $('#enter_message').val('');
+            var message = $('#enter_message').val();
+            if ($.trim(message) != "") {
+                socket.emit('chat message', $('#enter_message').val());
+                $('#enter_message').val('');
+            }
             return false;
         });
-        socket.on('chat message', function (msg) {
-            var old_chats = $('#conversation_holder').text();
-            $('#conversation_holder').text(old_chats + msg + "\n");
-            $('#conversation_holder').scrollTop($('#conversation_holder')[0].scrollHeight);
+        socket.on('chat message', function (data) {
+           var color = (data.messageCount % 2 == 0) ? "#eeeeee" : "#DBDBDB";
+           var message = '<div style="background-color:' + color + ';width: 100%;padding: 5px;"> ' + data.message + '<small style="font-size: 10px;">&nbsp;('+data.date+')</small>' + '</div>';
+           $('#conversation_holder').append(message);
+           $('#conversation_holder').scrollTop($('#conversation_holder')[0].scrollHeight);
         });
     });
 </script>
