@@ -14,4 +14,4 @@ npm install
 node index.js
 ```
 
-Contractions ! Now you can access to project from http://localhost:3000 from your browser.
+that's it ! Now you can access to project from http://localhost:3000 from your browser.
